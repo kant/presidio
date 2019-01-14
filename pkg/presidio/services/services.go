@@ -10,7 +10,7 @@ import (
 
 	"github.com/Microsoft/presidio/pkg/cache"
 	"github.com/Microsoft/presidio/pkg/cache/redis"
-	jsoncrawler "github.com/Microsoft/presidio/pkg/jsonCrawler"
+	jsoncrawler "github.com/Microsoft/presidio/pkg/json-crawler"
 	log "github.com/Microsoft/presidio/pkg/logger"
 	"github.com/Microsoft/presidio/pkg/platform"
 	"github.com/Microsoft/presidio/pkg/presidio"

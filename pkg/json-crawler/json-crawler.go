@@ -12,6 +12,7 @@ type analyzeFunc func(ctx context.Context, text string, template *types.AnalyzeT
 type anonymizeFunc func(ctx context.Context, analyzeResults []*types.AnalyzeResult, text string, anonymizeTemplate *types.AnonymizeTemplate) (*types.AnonymizeResponse, error)
 
 const errorMsg = "Schema Json and Json to Anonymize are not in the same json format"
+const fieldNameRegex = "<[A-Z]+(_*[A-Z]*)*>"
 
 //JSONCrawler for analyzing and anonymizing text
 type JSONCrawler struct {
@@ -117,7 +118,7 @@ func (jsonCrawler *JSONCrawler) scanIfNotEmpty(valuesMap map[string]interface{},
 }
 
 func (jsonCrawler *JSONCrawler) analyzeAndAnonymizeJSON(val string, field string) (string, error) {
-	match, err := regexp.MatchString("<[A-Z]+(_*[A-Z]*)*>", field)
+	match, err := regexp.MatchString(fieldNameRegex, field)
 	if err != nil {
 		return "", err
 	}
