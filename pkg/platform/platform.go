@@ -68,6 +68,7 @@ type Settings struct {
 	StreamRequest             string
 	QueueURL                  string
 	LogLevel                  string
+	RecognizersStoreGrpcPort  int
 }
 
 //WebPort for http server
@@ -78,6 +79,9 @@ const GrpcPort = "grpc_port"
 
 //DatasinkGrpcPort for data sink GRPC server
 const DatasinkGrpcPort = "datasink_grpc_port"
+
+//RecognizersStoreGrpcPort for data sink GRPC server
+const RecognizersStoreGrpcPort = "recognizers_store_grpc_port"
 
 //PresidioNamespace for k8s deployment
 const PresidioNamespace = "presidio_namespace"
@@ -142,6 +146,7 @@ func GetSettings() *Settings {
 		WebPort:                   viper.GetInt(strings.ToUpper(WebPort)),
 		GrpcPort:                  viper.GetInt(strings.ToUpper(GrpcPort)),
 		DatasinkGrpcPort:          viper.GetInt(strings.ToUpper(DatasinkGrpcPort)),
+		RecognizersStoreGrpcPort:  viper.GetInt(strings.ToUpper(RecognizersStoreGrpcPort)),
 		Namespace:                 getTrimmedEnv(PresidioNamespace),
 		AnalyzerSvcAddress:        getTrimmedEnv(AnalyzerSvcAddress),
 		AnonymizerSvcAddress:      getTrimmedEnv(AnonymizerSvcAddress),

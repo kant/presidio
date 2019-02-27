@@ -123,5 +123,8 @@ presidio_cli = CLI(
     config_env_var_prefix=CLI_NAME,
     commands_loader_cls=CommandsLoader,
     help_cls=PresidioCLIHelp)
-exit_code = presidio_cli.invoke(sys.argv[1:])
-sys.exit(exit_code)
+
+if __name__ == '__main__':
+    a = AnalyzerEngine()
+    a.analyze("fdf", ["CREDIT_CARD", "PHONE_NUMBER"], "en")
+    a.analyze("fdf", ["CREDIT_CARD", "PHONE_NUMBER"], "en")

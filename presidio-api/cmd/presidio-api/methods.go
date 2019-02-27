@@ -14,6 +14,7 @@ import (
 	"github.com/Microsoft/presidio/presidio-api/cmd/presidio-api/api/analyze"
 	"github.com/Microsoft/presidio/presidio-api/cmd/presidio-api/api/anonymize"
 	ai "github.com/Microsoft/presidio/presidio-api/cmd/presidio-api/api/anonymize-image"
+	"github.com/Microsoft/presidio/presidio-api/cmd/presidio-api/api/recognizers"
 	scj "github.com/Microsoft/presidio/presidio-api/cmd/presidio-api/api/scanner-cron-job"
 	sj "github.com/Microsoft/presidio/presidio-api/cmd/presidio-api/api/stream-job"
 	"github.com/Microsoft/presidio/presidio-api/cmd/presidio-api/api/templates"
@@ -240,4 +241,17 @@ func openFile(header *multipart.FileHeader) ([]byte, error) {
 	}
 
 	return bt, nil
+}
+
+func insertRecognizer(c *gin.Context) {
+	var recognizerInsertRequest *types.RecognizerInsertOrUpdateRequest
+	if c.Bind(&recognizerInsertRequest) == nil {
+		result, err := recognizers.InsertRecognizer(c, api,
+			recognizerInsertRequest)
+		if err != nil {
+			server.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		server.WriteResponse(c, http.StatusOK, result)
+	}
 }

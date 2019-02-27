@@ -5,3 +5,4 @@ grpcio
 protobuf
 tldextract
 knack
+redis

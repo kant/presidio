@@ -124,6 +124,22 @@ func setupHTTPServer(port int, loglevel string) {
 			projects.POST("/schedule-streams-job", scheduleStreamJob)
 		}
 
+		// recognizers group
+		// /api/v1/recognizers
+		recognizers := v1.Group("/analyzer/recognizers")
+		{
+			// Get an existing recognizer
+			//recognizers.GET(":id", getRecognizer)
+
+			// Create a new recognizer
+			recognizers.POST("/", insertRecognizer)
+
+			// Update an existing recognizer
+			//recognizers.PUT(":id", updateRecognizer)
+
+			// DELETE a recognizer
+			//recognizers.DELETE(":id", deleteRecognizer)
+		}
 	}
 	server.Start(r)
 }

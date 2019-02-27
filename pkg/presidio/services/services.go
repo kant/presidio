@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 
 	"context"
@@ -17,13 +18,14 @@ import (
 
 //Services exposes GRPC services
 type Services struct {
-	AnalyzerService       types.AnalyzeServiceClient
-	AnonymizeService      types.AnonymizeServiceClient
-	AnonymizeImageService types.AnonymizeImageServiceClient
-	OcrService            types.OcrServiceClient
-	DatasinkService       types.DatasinkServiceClient
-	SchedulerService      types.SchedulerServiceClient
-	Settings              *platform.Settings
+	AnalyzerService         types.AnalyzeServiceClient
+	AnonymizeService        types.AnonymizeServiceClient
+	AnonymizeImageService   types.AnonymizeImageServiceClient
+	OcrService              types.OcrServiceClient
+	DatasinkService         types.DatasinkServiceClient
+	SchedulerService        types.SchedulerServiceClient
+	RecognizersStoreService types.RecognizersStoreServiceClient
+	Settings                *platform.Settings
 }
 
 //New services with settings
@@ -123,6 +125,17 @@ func (services *Services) SetupDatasinkService() {
 	services.DatasinkService = datasinkService
 }
 
+//SetupRecognizerStoreService GRPC connection
+func (services *Services) SetupRecognizerStoreService() {
+	address := "localhost"
+	recognizerStoreService, err := rpc.SetupRecognizerStoreService(fmt.Sprintf("%s:%d", address, services.Settings.RecognizersStoreGrpcPort))
+	if err != nil {
+		log.Fatal("Connection to recognizers store service failed %q", err)
+	}
+
+	services.RecognizersStoreService = recognizerStoreService
+}
+
 //SetupCache  Redis cache
 func (services *Services) SetupCache() cache.Cache {
 	if services.Settings.RedisURL == "" {
@@ -136,6 +149,59 @@ func (services *Services) SetupCache() cache.Cache {
 		services.Settings.RedisSSL,
 	)
 	return cache
+}
+
+// InsertRecognizer xxx
+func (services *Services) InsertRecognizer(
+	ctx context.Context, rec *types.PatternRecognizer) (
+	*types.RecognizersStoreResponse, error) {
+	insertRequest := &types.RecognizerInsertOrUpdateRequest{
+		Value: rec,
+	}
+
+	results, err := services.RecognizersStoreService.ApplyInsert(ctx, insertRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
+
+// UpdateRecognizer xxx
+func (services *Services) UpdateRecognizer(
+	ctx context.Context, rec *types.PatternRecognizer) (
+	*types.RecognizersStoreResponse, error) {
+	return nil, errors.New("I didnt implement yet")
+}
+
+// DeleteRecognizer xxx
+func (services *Services) DeleteRecognizer(
+	ctx context.Context, rec *types.PatternRecognizer) (
+	*types.RecognizersStoreResponse, error) {
+	return nil, errors.New("I didnt implement yet")
+}
+
+// GetRecognizer xxx
+func (services *Services) GetRecognizer(
+	ctx context.Context, name string) (
+	*types.RecognizersGetResponse, error) {
+	return nil, errors.New("I didnt implement yet")
+}
+
+// GetAllRecognizers xxx
+func (services *Services) GetAllRecognizers(
+	ctx context.Context) (
+	*types.RecognizersGetResponse, error) {
+
+	return nil, errors.New("I didnt implement yet")
+}
+
+// GetUpdateTimeStamp xxx
+func (services *Services) GetUpdateTimeStamp(
+	ctx context.Context) (
+	*types.RecognizerTimestampResponse, error) {
+
+	return nil, errors.New("I didnt implement yet")
 }
 
 //AnalyzeItem - search for PII

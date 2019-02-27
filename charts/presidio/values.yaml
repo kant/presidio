@@ -10,6 +10,19 @@ redis:
     #db: 0
     #ssl: false
 
+  
+redis-internal:
+    nameOverride: persistent-redis
+    url: persistent-redis-master.presidio-system.svc.cluster.local:6380
+
+    #password:
+    #db: 0
+    #ssl: false
+
+    master:
+        service:
+            port: 6380
+
 api:
   name: presidio-api
   imagePullPolicy: Always
