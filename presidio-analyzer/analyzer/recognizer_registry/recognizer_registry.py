@@ -1,9 +1,8 @@
 import time
 import logging
 
-import grpc
-import recognizers_store_pb2
-import recognizers_store_pb2_grpc
+from analyzer.recognizer_registry.recognizers_store_api \
+    import RecognizerStoreApi  # noqa: F401
 
 from analyzer.predefined_recognizers import CreditCardRecognizer, \
     SpacyRecognizer, CryptoRecognizer, DomainRecognizer, \
@@ -18,11 +17,12 @@ class RecognizerRegistry:
     Detects, registers and holds all recognizers to be used by the analyzer
     """
 
-    def __init__(self):
+    def __init__(self, recognizer_store_api=RecognizerStoreApi()):
         self.predefined_recognizers = []
         self.recognizers = []
         self.loaded_timestamp = None
         self.loaded_custom_recognizers = []
+        self.store_api = recognizer_store_api
 
         #   TODO: Change the code to dynamic loading -
         # Task #598:  Support loading of the pre-defined recognizers
@@ -36,10 +36,6 @@ class RecognizerRegistry:
             UsBankRecognizer(), UsLicenseRecognizer(),
             UsItinRecognizer(), UsPassportRecognizer(),
             UsPhoneRecognizer(), UsSsnRecognizer()])
-
-        channel = grpc.insecure_channel('localhost:3004')
-        self.rs_stub = recognizers_store_pb2_grpc.RecognizersStoreServiceStub(
-            channel)
 
     def get_recognizers(self, entities=None, language=None):
         """
@@ -85,7 +81,7 @@ class RecognizerRegistry:
                 to_return.extend(subset)
 
         logging.info("Found %d predefined recognizers", len(to_return))
-        custom = self.get_custom_recognizers_grpc()
+        custom = self.get_custom_recognizers()
         subset_custom = [rec for rec in custom if
                          entity in rec.supported_entities
                          and language == rec.supported_language]
@@ -107,15 +103,8 @@ class RecognizerRegistry:
 
         return to_return
 
-    def get_custom_recognizers_grpc(self):
-        timestamp_request = \
-            recognizers_store_pb2.RecognizerGetTimestampRequest()
-        lst_update = 0
-        try:
-            lst_update = self.rs_stub.ApplyGetTimestamp(
-                timestamp_request).unixTimestamp
-        except grpc.RpcError:
-            logging.info("Failed to get timestamp")
+    def get_custom_recognizers(self):
+        lst_update = self.store_api.get_latest_timestamp()
 
         if self.loaded_timestamp is not None:
             logging.info(
@@ -135,7 +124,7 @@ class RecognizerRegistry:
                               time.localtime(lst_update)), lst_update)
             # check if anything updated since last time
             if self.loaded_timestamp is None or \
-                    lst_update >= self.loaded_timestamp:
+                    lst_update > self.loaded_timestamp:
                 self.loaded_timestamp = int(time.time())
 
                 self.loaded_custom_recognizers = []
@@ -144,8 +133,7 @@ class RecognizerRegistry:
                     "Requesting custom recognizers " +
                     "from persistent storage...")
 
-                req = recognizers_store_pb2.RecognizersGetAllRequest()
-                raw_recognizers = self.rs_stub.ApplyGetAll(req).recognizers
+                raw_recognizers = self.store_api.get_all_recognizers()
                 if raw_recognizers is None or len(raw_recognizers) == 0:
                     logging.info(
                         "No custom recognizers found")
