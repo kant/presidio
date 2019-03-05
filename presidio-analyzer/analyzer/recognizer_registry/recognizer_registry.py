@@ -17,9 +17,9 @@ class RecognizerRegistry:
     Detects, registers and holds all recognizers to be used by the analyzer
     """
 
-    def __init__(self, recognizer_store_api=RecognizerStoreApi()):
+    def __init__(self, recognizer_store_api=RecognizerStoreApi(), recognizers=[]):
         self.predefined_recognizers = []
-        self.recognizers = []
+        self.recognizers = recognizers
         self.loaded_timestamp = None
         self.loaded_custom_recognizers = []
         self.store_api = recognizer_store_api
@@ -37,6 +37,8 @@ class RecognizerRegistry:
             UsItinRecognizer(), UsPassportRecognizer(),
             UsPhoneRecognizer(), UsSsnRecognizer()])
 
+        self.recognizers.extend(self.predefined_recognizers)
+
     def get_recognizers(self, entities=None, language=None):
         """
         Returns a list of recognizers, which support the specified name and
@@ -48,10 +50,8 @@ class RecognizerRegistry:
         and language
         """
 
-        # fetch custom recognizers from remote
-
         if language is None and entities is None:
-            return self.predefined_recognizers.extend(self.recognizers)
+            return self.recognizers
 
         if language is None:
             raise ValueError("No language provided")
@@ -65,13 +65,6 @@ class RecognizerRegistry:
                       entity in rec.supported_entities
                       and language == rec.supported_language]
 
-            subset_predefined = [rec for rec in self.predefined_recognizers if
-                                 entity in rec.supported_entities
-                                 and language == rec.supported_language]
-
-            # now we have both the custom recognizers and the predefined
-            # recognizers
-            subset.extend(subset_predefined)
             if len(subset) == 0:
                 logging.warning(
                     "Entity " + entity +

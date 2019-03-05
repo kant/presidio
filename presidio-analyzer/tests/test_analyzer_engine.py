@@ -57,9 +57,9 @@ class RecognizerStoreApiMock(RecognizerStoreApi):
 
 class MockRecognizerRegistry(RecognizerRegistry):
     def load_recognizers(self, path):
-            #   TODO: Change the code to dynamic loading -
-            # Task #598:  Support loading of the pre-defined recognizers
-            # from the given path.
+        #   TODO: Change the code to dynamic loading -
+        # Task #598:  Support loading of the pre-defined recognizers
+        # from the given path.
         self.recognizers.extend([CreditCardRecognizer(),
                                  UsPhoneRecognizer()])
 
@@ -130,7 +130,7 @@ class TestAnalyzerEngine(TestCase):
         # TODO: add more cases with bug:
         # bug# 597: Analyzer remove duplicates doesn't handle all cases of one result as a substring of the other
 
-    def test_add_pattern_recognizer_from_dict(self):
+    def test_added_pattern_recognizer_works(self):
         pattern_recognizer = {
             "name": "Rocket recognizer",
             "pattern": r'\W*(rocket)\W*',
@@ -158,7 +158,7 @@ class TestAnalyzerEngine(TestCase):
         assert res[0].start == 0
         assert res[0].end == 7
 
-    def test_remove_analyzer(self):
+    def test_removed_pattern_recognizer_doesnt_work(self):
         pattern_recognizer = {
             "name": "Spaceship recognizer",
             "pattern": r'\W*(spaceship)\W*',
@@ -190,34 +190,4 @@ class TestAnalyzerEngine(TestCase):
         # Test again to see we didn't get any results
         res = analyze_engine.analyze(text=text, entities=entities,
                                      language='en')
-        assert len(res) == 0
-
-    def test_custom_cache_recognizers_logic(self):
-        pattern_recognizer = {
-            "name": "Rocket recognizer",
-            "pattern": r'\W*(rocket)\W*',
-            "score": 0.8,
-            "entity": "ROCKET",
-            "language": "en"}
-
-        # Make sure the analyzer doesn't get this entity
-        recognizers_store_api_mock = RecognizerStoreApiMock()
-        analyze_engine = AnalyzerEngine(
-            MockRecognizerRegistry(recognizers_store_api_mock))
-        text = "rocket is my favorite transportation"
-        entities = ["CREDIT_CARD", "ROCKET"]
-        res = analyze_engine.analyze(text=text, entities=entities,
-                                     language='en')
-        assert len(res) == 0
-
-        # Add a new recognizer for the word "rocket" (case insensitive)
-        recognizers_store_api_mock.add_custom_pattern_recognizer(
-            pattern_recognizer,
-            skip_timestamp_update=True)
-
-        # Check that the entity is recognized:
-        res = analyze_engine.analyze(text=text, entities=entities,
-                                     language='en')
-        # Since the timestam wasn't updated the recognizers are stale from the cache
-        # without the newly added one
         assert len(res) == 0
