@@ -20,6 +20,7 @@ class AnalyzerEngine(analyze_pb2_grpc.AnalyzeServiceServicer):
     def __init__(self, registry=RecognizerRegistry()):
         # load all recognizers
         self.registry = registry
+        registry.load_predefined_recognizers()
 
     @staticmethod
     def __remove_duplicates(results):

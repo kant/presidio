@@ -87,6 +87,7 @@ class TestRecognizerRegistry(TestCase):
 
     def test_get_recognizers_all(self):
         registry = self.get_mock_recognizer_registry()
+        registry.load_predefined_recognizers()
         recognizers = registry.get_recognizers()
         assert len(recognizers) == 5 + 14  # 14 predefined
 

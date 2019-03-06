@@ -19,16 +19,19 @@ class RecognizerRegistry:
 
     def __init__(self, recognizer_store_api=RecognizerStoreApi(),
                  recognizers=[]):
-        self.predefined_recognizers = []
         self.recognizers = recognizers
         self.loaded_timestamp = None
         self.loaded_custom_recognizers = []
         self.store_api = recognizer_store_api
 
+    def load_predefined_recognizers(self):
         #   TODO: Change the code to dynamic loading -
         # Task #598:  Support loading of the pre-defined recognizers
         # from the given path.
-        self.predefined_recognizers.extend([
+        # Currently this is not integrated into the init method to speed up
+        # loading time if these are not actually needed (SpaCy for example) is
+        # time consuming to load
+        self.recognizers.extend([
             CreditCardRecognizer(),
             SpacyRecognizer(),
             CryptoRecognizer(), DomainRecognizer(),
@@ -37,8 +40,6 @@ class RecognizerRegistry:
             UsBankRecognizer(), UsLicenseRecognizer(),
             UsItinRecognizer(), UsPassportRecognizer(),
             UsPhoneRecognizer(), UsSsnRecognizer()])
-
-        self.recognizers.extend(self.predefined_recognizers)
 
     def get_recognizers(self, entities=None, language=None):
         """
