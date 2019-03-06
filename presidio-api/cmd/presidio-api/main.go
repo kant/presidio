@@ -129,16 +129,19 @@ func setupHTTPServer(port int, loglevel string) {
 		recognizers := v1.Group("/analyzer/recognizers")
 		{
 			// Get an existing recognizer
-			//recognizers.GET(":id", getRecognizer)
+			recognizers.GET(":id", getRecognizer)
 
-			// Create a new recognizer
-			recognizers.POST("/", insertRecognizer)
+			// Get all existing recognizer
+			recognizers.GET("/", getAllRecognizers)
+
+			// Insert a new recognizer
+			recognizers.POST(":id", insertRecognizer)
 
 			// Update an existing recognizer
-			//recognizers.PUT(":id", updateRecognizer)
+			recognizers.PUT(":id", updateRecognizer)
 
 			// DELETE a recognizer
-			//recognizers.DELETE(":id", deleteRecognizer)
+			recognizers.DELETE(":id", deleteRecognizer)
 		}
 	}
 	server.Start(r)

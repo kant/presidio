@@ -244,10 +244,70 @@ func openFile(header *multipart.FileHeader) ([]byte, error) {
 }
 
 func insertRecognizer(c *gin.Context) {
-	var recognizerInsertRequest *types.RecognizerInsertOrUpdateRequest
-	if c.Bind(&recognizerInsertRequest) == nil {
-		result, err := recognizers.InsertRecognizer(c, api,
-			recognizerInsertRequest)
+	var request *types.RecognizerInsertOrUpdateRequest
+	id := c.Param("id")
+	if c.Bind(&request) == nil {
+		request.Value.Name = id
+		result, err := recognizers.InsertRecognizer(
+			c, api, request)
+		if err != nil {
+			server.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		server.WriteResponse(c, http.StatusOK, result)
+	}
+}
+
+func updateRecognizer(c *gin.Context) {
+	var request *types.RecognizerInsertOrUpdateRequest
+	id := c.Param("id")
+	if c.Bind(&request) == nil {
+		request.Value.Name = id
+		result, err := recognizers.UpdateRecognizer(
+			c, api, request)
+		if err != nil {
+			server.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		server.WriteResponse(c, http.StatusOK, result)
+	}
+}
+
+func deleteRecognizer(c *gin.Context) {
+	var request *types.RecognizerDeleteRequest
+	id := c.Param("id")
+	if c.Bind(&request) == nil {
+		request.Name = id
+		result, err := recognizers.DeleteRecognizer(
+			c, api, request)
+		if err != nil {
+			server.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		server.WriteResponse(c, http.StatusOK, result)
+	}
+}
+
+func getRecognizer(c *gin.Context) {
+	var request *types.RecognizerGetRequest
+	id := c.Param("id")
+	if c.Bind(&request) == nil {
+		request.Name = id
+		result, err := recognizers.GetRecognizer(
+			c, api, request)
+		if err != nil {
+			server.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		server.WriteResponse(c, http.StatusOK, result)
+	}
+}
+
+func getAllRecognizers(c *gin.Context) {
+	var request *types.RecognizersGetAllRequest
+	if c.Bind(&request) == nil {
+		result, err := recognizers.GetAllRecognizers(
+			c, api, request)
 		if err != nil {
 			server.AbortWithError(c, http.StatusBadRequest, err)
 			return

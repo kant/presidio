@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 
 	"context"
@@ -151,15 +150,15 @@ func (services *Services) SetupCache() cache.Cache {
 	return cache
 }
 
-// InsertRecognizer xxx
+// InsertRecognizer use the recognizers store service to insert a new recognizer
 func (services *Services) InsertRecognizer(
 	ctx context.Context, rec *types.PatternRecognizer) (
 	*types.RecognizersStoreResponse, error) {
-	insertRequest := &types.RecognizerInsertOrUpdateRequest{
+	request := &types.RecognizerInsertOrUpdateRequest{
 		Value: rec,
 	}
 
-	results, err := services.RecognizersStoreService.ApplyInsert(ctx, insertRequest)
+	results, err := services.RecognizersStoreService.ApplyInsert(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -167,41 +166,82 @@ func (services *Services) InsertRecognizer(
 	return results, nil
 }
 
-// UpdateRecognizer xxx
+// UpdateRecognizer use the recognizers store service to update a recognizer
 func (services *Services) UpdateRecognizer(
 	ctx context.Context, rec *types.PatternRecognizer) (
 	*types.RecognizersStoreResponse, error) {
-	return nil, errors.New("I didnt implement yet")
+	request := &types.RecognizerInsertOrUpdateRequest{
+		Value: rec,
+	}
+
+	results, err := services.RecognizersStoreService.ApplyUpdate(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
 
-// DeleteRecognizer xxx
+// DeleteRecognizer use the recognizers store service to delete a recognizer
 func (services *Services) DeleteRecognizer(
-	ctx context.Context, rec *types.PatternRecognizer) (
+	ctx context.Context, name string) (
 	*types.RecognizersStoreResponse, error) {
-	return nil, errors.New("I didnt implement yet")
+	request := &types.RecognizerDeleteRequest{
+		Name: name,
+	}
+
+	results, err := services.RecognizersStoreService.ApplyDelete(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
 
-// GetRecognizer xxx
+// GetRecognizer use the recognizers store service to get a recognizer
 func (services *Services) GetRecognizer(
 	ctx context.Context, name string) (
 	*types.RecognizersGetResponse, error) {
-	return nil, errors.New("I didnt implement yet")
+	request := &types.RecognizerGetRequest{
+		Name: name,
+	}
+
+	results, err := services.RecognizersStoreService.ApplyGet(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
 
-// GetAllRecognizers xxx
+// GetAllRecognizers use the recognizers store service to get all recognizers
 func (services *Services) GetAllRecognizers(
 	ctx context.Context) (
 	*types.RecognizersGetResponse, error) {
+	request := &types.RecognizersGetAllRequest{}
 
-	return nil, errors.New("I didnt implement yet")
+	results, err := services.RecognizersStoreService.ApplyGetAll(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
 
-// GetUpdateTimeStamp xxx
+// GetUpdateTimeStamp use the recognizers store service to get the last
+// timestamp when the store was updated
 func (services *Services) GetUpdateTimeStamp(
 	ctx context.Context) (
 	*types.RecognizerTimestampResponse, error) {
+	request := &types.RecognizerGetTimestampRequest{}
 
-	return nil, errors.New("I didnt implement yet")
+	results, err := services.RecognizersStoreService.ApplyGetTimestamp(ctx,
+		request)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
 
 //AnalyzeItem - search for PII

@@ -35,7 +35,7 @@ type ServicesAPI interface {
 
 	InsertRecognizer(ctx context.Context, rec *types.PatternRecognizer) (*types.RecognizersStoreResponse, error)
 	UpdateRecognizer(ctx context.Context, rec *types.PatternRecognizer) (*types.RecognizersStoreResponse, error)
-	DeleteRecognizer(ctx context.Context, rec *types.PatternRecognizer) (*types.RecognizersStoreResponse, error)
+	DeleteRecognizer(ctx context.Context, name string) (*types.RecognizersStoreResponse, error)
 	GetRecognizer(ctx context.Context, name string) (*types.RecognizersGetResponse, error)
 	GetAllRecognizers(ctx context.Context) (*types.RecognizersGetResponse, error)
 	GetUpdateTimeStamp(ctx context.Context) (*types.RecognizerTimestampResponse, error)

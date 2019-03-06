@@ -24,11 +24,17 @@ func TestInsertAndGetRecognizer(t *testing.T) {
 	recognizersStore = mock.New()
 
 	// Insert a new pattern recognizer
+	p := &types.Pattern{}
+	p.Score = 0.123
+	p.Regex = "*FindMe*"
+	p.Name = "findme"
+	patternArr := []*types.Pattern{}
+	patternArr = append(patternArr, p)
+
 	r := &types.RecognizerInsertOrUpdateRequest{}
 	newRecognizer := types.PatternRecognizer{
 		Name:     "DemoRecognizer1",
-		Pattern:  "*FindMe*",
-		Score:    0.123,
+		Patterns: patternArr,
 		Entity:   "DEMO_ITEMS",
 		Language: "en"}
 	r.Value = &newRecognizer
@@ -68,11 +74,17 @@ func TestConflictingInserts(t *testing.T) {
 	assert.Equal(t, rawValues, "")
 
 	// Insert a new pattern recognizer
+	p := &types.Pattern{}
+	p.Score = 0.123
+	p.Regex = "*FindMe*"
+	p.Name = "findme"
+	patternArr := []*types.Pattern{}
+	patternArr = append(patternArr, p)
+
 	r := &types.RecognizerInsertOrUpdateRequest{}
 	newRecognizer1 := types.PatternRecognizer{
 		Name:     "DemoRecognizer1",
-		Pattern:  "*FindMe*",
-		Score:    0.123,
+		Patterns: patternArr,
 		Entity:   "DEMO_ITEMS",
 		Language: "en"}
 	r.Value = &newRecognizer1
@@ -100,22 +112,34 @@ func TestMultipleDifferentInserts(t *testing.T) {
 	assert.Equal(t, rawValues, "")
 
 	// Insert a new pattern recognizer
+	p := &types.Pattern{}
+	p.Score = 0.123
+	p.Regex = "*FindMe*"
+	p.Name = "findme"
+	patternArr := []*types.Pattern{}
+	patternArr = append(patternArr, p)
+
 	r := &types.RecognizerInsertOrUpdateRequest{}
 	newRecognizer1 := types.PatternRecognizer{
 		Name:     "DemoRecognizer1",
-		Pattern:  "*FindMe*",
-		Score:    0.123,
+		Patterns: patternArr,
 		Entity:   "DEMO_ITEMS",
 		Language: "en"}
 	r.Value = &newRecognizer1
 	_, err = applyInsertOrUpdate(r, false)
 	assert.NoError(t, err)
 
+	p = &types.Pattern{}
+	p.Score = 0.123
+	p.Regex = "*FindMe*"
+	p.Name = "findme"
+	patternArr = []*types.Pattern{}
+	patternArr = append(patternArr, p)
+
 	r = &types.RecognizerInsertOrUpdateRequest{}
 	newRecognizer2 := types.PatternRecognizer{
 		Name:     "DemoRecognizer2",
-		Pattern:  "*FindMeToo*",
-		Score:    0.123,
+		Patterns: patternArr,
 		Entity:   "DEMO_ITEMS",
 		Language: "en"}
 	r.Value = &newRecognizer2
@@ -140,11 +164,17 @@ func TestDeleteOnlyRecognizer(t *testing.T) {
 	assert.Equal(t, rawValues, "")
 
 	// Insert a new pattern recognizer
+	p := &types.Pattern{}
+	p.Score = 0.123
+	p.Regex = "*FindMe*"
+	p.Name = "findme"
+	patternArr := []*types.Pattern{}
+	patternArr = append(patternArr, p)
+
 	r := &types.RecognizerInsertOrUpdateRequest{}
 	deletedRecognizer := types.PatternRecognizer{
 		Name:     "DemoRecognizer1",
-		Pattern:  "*FindMe*",
-		Score:    0.123,
+		Patterns: patternArr,
 		Entity:   "DEMO_ITENS",
 		Language: "en"}
 	r.Value = &deletedRecognizer
@@ -172,11 +202,17 @@ func TestDeleteRecognizer(t *testing.T) {
 	assert.Equal(t, rawValues, "")
 
 	// Insert a new pattern recognizer
+	p := &types.Pattern{}
+	p.Score = 0.123
+	p.Regex = "*FindMe*"
+	p.Name = "findme"
+	patternArr := []*types.Pattern{}
+	patternArr = append(patternArr, p)
+
 	r := &types.RecognizerInsertOrUpdateRequest{}
 	insertRecognizer := types.PatternRecognizer{
 		Name:     "DemoRecognizer1",
-		Pattern:  "*FindMe*",
-		Score:    0.123,
+		Patterns: patternArr,
 		Entity:   "DEMO_ITEMS",
 		Language: "en"}
 	r.Value = &insertRecognizer
@@ -184,10 +220,16 @@ func TestDeleteRecognizer(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Insert a second item
+	p = &types.Pattern{}
+	p.Score = 0.123
+	p.Regex = "*FindMe*"
+	p.Name = "findme"
+	patternArr = []*types.Pattern{}
+	patternArr = append(patternArr, p)
+
 	insertRecognizer = types.PatternRecognizer{
 		Name:     "DemoRecognizer2",
-		Pattern:  "*FindMeToo*",
-		Score:    0.123,
+		Patterns: patternArr,
 		Entity:   "DEMO_ITEMS",
 		Language: "en"}
 	r.Value = &insertRecognizer

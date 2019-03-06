@@ -2,8 +2,6 @@ package recognizers
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
 	types "github.com/Microsoft/presidio-genproto/golang"
 
@@ -14,39 +12,43 @@ import (
 // store service
 func InsertRecognizer(ctx context.Context,
 	api *store.API,
-	insertRecognizerRequest *types.RecognizerInsertOrUpdateRequest) (
+	request *types.RecognizerInsertOrUpdateRequest) (
 	*types.RecognizersStoreResponse, error) {
-	res, err := api.Services.InsertRecognizer(ctx,
-		insertRecognizerRequest.Value)
-	if err != nil {
-		return nil, err
-	}
-	if res == nil {
-		return nil, fmt.Errorf("No results")
-	}
-	return res, err
+	return api.Services.InsertRecognizer(ctx, request.Value)
 }
 
-// UpdateRecognizer xxx
-func UpdateRecognizer(ctx context.Context, rec *types.PatternRecognizer) (
+// UpdateRecognizer updates an existing recognizer via the Recognizer
+// store service
+func UpdateRecognizer(ctx context.Context,
+	api *store.API,
+	request *types.RecognizerInsertOrUpdateRequest) (
 	*types.RecognizersStoreResponse, error) {
-	return nil, errors.New("Didnt implement yet")
+	return api.Services.UpdateRecognizer(ctx, request.Value)
 }
 
-// DeleteRecognizer xxx
-func DeleteRecognizer(ctx context.Context, rec *types.PatternRecognizer) (
+// DeleteRecognizer deletes an existing recognizer via the Recognizer
+// store service
+func DeleteRecognizer(ctx context.Context,
+	api *store.API,
+	request *types.RecognizerDeleteRequest) (
 	*types.RecognizersStoreResponse, error) {
-	return nil, errors.New("Didnt implement yet")
+	return api.Services.DeleteRecognizer(ctx, request.Name)
 }
 
-// GetRecognizer xxx
-func GetRecognizer(ctx context.Context, name string) (
+// GetRecognizer retrieves an existing recognizer via the Recognizer
+// store service
+func GetRecognizer(ctx context.Context,
+	api *store.API,
+	request *types.RecognizerGetRequest) (
 	*types.RecognizersGetResponse, error) {
-	return nil, errors.New("Didnt implement yet")
+	return api.Services.GetRecognizer(ctx, request.Name)
 }
 
-// GetAllRecognizers xxx
-func GetAllRecognizers(ctx context.Context) (
+// GetAllRecognizers retrieves all existing recognizers via the Recognizer
+// store service
+func GetAllRecognizers(ctx context.Context,
+	api *store.API,
+	request *types.RecognizersGetAllRequest) (
 	*types.RecognizersGetResponse, error) {
-	return nil, errors.New("Didnt implement yet")
+	return api.Services.GetAllRecognizers(ctx)
 }

@@ -35,20 +35,10 @@ var (
 	timestampKey   = "custom_recognizers:last_update"
 )
 
-//Recognizer is the struct representing a custom pattern recognizer in
-// the persistent storage
-type Recognizer struct {
-	Name     string  `json:"name"`
-	Score    float32 `json:"score"`
-	Pattern  string  `json:"pattern"`
-	Entity   string  `json:"entity"`
-	Language string  `json:"language"`
-}
-
 func main() {
 
 	pflag.Int(platform.GrpcPort, 3004, "GRPC listen port")
-	pflag.String(platform.RedisURL, "localhost:6379", "Redis address")
+	pflag.String(platform.RedisURL, "localhost:6380", "Redis address")
 	pflag.String(platform.RedisPassword, "", "Redis db password (optional)")
 	pflag.Int(platform.RedisDb, 0, "Redis db (optional)")
 	pflag.Bool(platform.RedisSSL, false, "Redis ssl (optional)")
@@ -97,12 +87,12 @@ func setValue(value string, timestamp string) error {
 	return nil
 }
 
-func getExistingRecognizers() ([]Recognizer, error) {
-	recognizersArr := make([]Recognizer, 0)
+func getExistingRecognizers() ([]types.PatternRecognizer, error) {
+	recognizersArr := make([]types.PatternRecognizer, 0)
 	existingItems, err := recognizersStore.Get(recognizersKey)
 	if err == nil && existingItems != "" {
 		log.Info("Found existing recognizers, appending...")
-		var recognizers []Recognizer
+		var recognizers []types.PatternRecognizer
 		err = json.Unmarshal([]byte(existingItems), &recognizers)
 		if err != nil {
 			return nil, err
@@ -123,7 +113,7 @@ func insertOrUpdateRecognizer(value string, isUpdate bool) error {
 		return err
 	}
 
-	var newRecognizer Recognizer
+	var newRecognizer types.PatternRecognizer
 	json.Unmarshal([]byte(value), &newRecognizer)
 
 	if isUpdate == false {
@@ -226,11 +216,12 @@ func applyGetAll(r *types.RecognizersGetAllRequest) (*types.RecognizersGetRespon
 
 //applyInsertOrUpdate inserts or updates a recognizer in the store
 func applyInsertOrUpdate(r *types.RecognizerInsertOrUpdateRequest, isUpdate bool) (*types.RecognizersStoreResponse, error) {
+
 	itemBytes, err := json.Marshal(r.Value)
 	if err != nil {
 		return nil, err
 	}
-
+	log.Info("hi: " + string(itemBytes))
 	err = insertOrUpdateRecognizer(string(itemBytes), isUpdate)
 	return &types.RecognizersStoreResponse{}, err
 }
@@ -251,7 +242,7 @@ func applyDelete(r *types.RecognizerDeleteRequest) (*types.RecognizersStoreRespo
 	}
 
 	log.Info("Found existing recognizers, searching for relevant one...")
-	var recognizersArr []Recognizer
+	var recognizersArr []types.PatternRecognizer
 	err = json.Unmarshal([]byte(existingItems), &recognizersArr)
 	if err != nil {
 		return nil, err
@@ -295,7 +286,6 @@ func applyGetTimestamp() (*types.RecognizerTimestampResponse, error) {
 
 // Server methods
 
-//ApplyGet xxx
 func (s *server) ApplyGet(ctx context.Context, r *types.RecognizerGetRequest) (*types.RecognizersGetResponse, error) {
 	response, err := applyGet(r)
 	if err != nil {
