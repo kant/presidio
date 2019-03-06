@@ -1,14 +1,18 @@
 
 from analyzer.pattern import Pattern
 from analyzer.pattern_recognizer import PatternRecognizer
-CONTEXT = []
 
 
 class CustomRecognizer(PatternRecognizer):
     """
     """
 
-    def __init__(self, name, regex, score, entity):
-        patterns = [Pattern(name, regex, score)]
-        super().__init__(supported_entity=entity, patterns=patterns,
-                         context=CONTEXT)
+    def __init__(self, name, patterns, entity, language, black_list,
+                 context=[]):
+        patterns_list = []
+        for pat in patterns:
+            patterns_list.extend([Pattern(pat.name, pat.regex, pat.score)])
+        super().__init__(name=name, supported_entity=entity,
+                         patterns=patterns_list,
+                         context=context, supported_language=language,
+                         black_list=black_list)

@@ -9,7 +9,7 @@ from analyzer.predefined_recognizers import CreditCardRecognizer, \
     EmailRecognizer, IbanRecognizer, IpRecognizer, NhsRecognizer, \
     UsBankRecognizer, UsLicenseRecognizer, \
     UsItinRecognizer, UsPassportRecognizer, UsPhoneRecognizer, \
-    UsSsnRecognizer, CustomRecognizer
+    UsSsnRecognizer
 
 
 class RecognizerRegistry:
@@ -17,7 +17,8 @@ class RecognizerRegistry:
     Detects, registers and holds all recognizers to be used by the analyzer
     """
 
-    def __init__(self, recognizer_store_api=RecognizerStoreApi(), recognizers=[]):
+    def __init__(self, recognizer_store_api=RecognizerStoreApi(),
+                 recognizers=[]):
         self.predefined_recognizers = []
         self.recognizers = recognizers
         self.loaded_timestamp = None
@@ -134,9 +135,6 @@ class RecognizerRegistry:
 
                 for element in raw_recognizers:
                     logging.info("adding: " + element.name)
-                    self.loaded_custom_recognizers.append(CustomRecognizer(
-                        element.name, element.pattern,
-                        element.score,
-                        element.entity))
+                    self.loaded_custom_recognizers.append(element)
 
         return self.loaded_custom_recognizers

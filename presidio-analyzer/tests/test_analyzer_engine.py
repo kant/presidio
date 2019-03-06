@@ -4,9 +4,6 @@ import pytest
 import time
 import logging
 
-from analyzer import recognizers_store_pb2
-
-from assertions import assert_result
 from analyzer import AnalyzerEngine, PatternRecognizer, Pattern, \
     RecognizerResult, RecognizerRegistry
 from analyzer.analyze_pb2 import AnalyzeRequest
@@ -28,13 +25,15 @@ class RecognizerStoreApiMock(RecognizerStoreApi):
         return self.recognizers
 
     def add_custom_pattern_recognizer(self, new_recognizer, skip_timestamp_update=False):
-        pb_recognizer = recognizers_store_pb2.PatternRecognizer()
-        pb_recognizer.name = new_recognizer["name"]
-        pb_recognizer.score = new_recognizer["score"]
-        pb_recognizer.entity = new_recognizer["entity"]
-        pb_recognizer.pattern = new_recognizer["pattern"]
-        pb_recognizer.language = new_recognizer["language"]
-        self.recognizers.append(pb_recognizer)
+        patterns = []
+        for pat in new_recognizer.patterns:
+            patterns.extend([Pattern(pat.name, pat.regex, pat.score)])
+        new_custom_recognizer = CustomRecognizer(name=new_recognizer.name, entity=new_recognizer.supported_entities[0],
+                                                 language=new_recognizer.supported_language,
+                                                 black_list=new_recognizer.black_list,
+                                                 context=new_recognizer.context,
+                                                 patterns=patterns)
+        self.recognizers.append(new_custom_recognizer)
 
         if skip_timestamp_update:
             return
@@ -131,12 +130,10 @@ class TestAnalyzerEngine(TestCase):
         # bug# 597: Analyzer remove duplicates doesn't handle all cases of one result as a substring of the other
 
     def test_added_pattern_recognizer_works(self):
-        pattern_recognizer = {
-            "name": "Rocket recognizer",
-            "pattern": r'\W*(rocket)\W*',
-            "score": 0.8,
-            "entity": "ROCKET",
-            "language": "en"}
+        pattern = Pattern("rocket pattern", r'\W*(rocket)\W*', 0.8)
+        pattern_recognizer = PatternRecognizer("ROCKET",
+                                               name="Rocket recognizer",
+                                               patterns=[pattern])
 
         # Make sure the analyzer doesn't get this entity
         recognizers_store_api_mock = RecognizerStoreApiMock()
@@ -159,12 +156,11 @@ class TestAnalyzerEngine(TestCase):
         assert res[0].end == 7
 
     def test_removed_pattern_recognizer_doesnt_work(self):
-        pattern_recognizer = {
-            "name": "Spaceship recognizer",
-            "pattern": r'\W*(spaceship)\W*',
-            "score": 0.8,
-            "entity": "SPACESHIP",
-            "language": "en"}
+        pattern = Pattern("spaceship pattern", r'\W*(spaceship)\W*', 0.8)
+        pattern_recognizer = PatternRecognizer("SPACESHIP",
+                                               name="Spaceship recognizer",
+                                               patterns=[pattern])
+
         # Make sure the analyzer doesn't get this entity
         recognizers_store_api_mock = RecognizerStoreApiMock()
         analyze_engine = AnalyzerEngine(MockRecognizerRegistry(

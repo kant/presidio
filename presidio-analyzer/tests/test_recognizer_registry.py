@@ -4,9 +4,9 @@ import pytest
 import logging
 from analyzer import RecognizerRegistry, PatternRecognizer, \
     EntityRecognizer, Pattern
-from analyzer import recognizers_store_pb2
 from analyzer.recognizer_registry.recognizers_store_api \
     import RecognizerStoreApi  # noqa: F401
+from analyzer.predefined_recognizers import CustomRecognizer
 import time
 
 
@@ -25,13 +25,15 @@ class RecognizerStoreApiMock(RecognizerStoreApi):
 
     def add_custom_pattern_recognizer(self, new_recognizer,
                                       skip_timestamp_update=False):
-        pb_recognizer = recognizers_store_pb2.PatternRecognizer()
-        pb_recognizer.name = new_recognizer["name"]
-        pb_recognizer.score = new_recognizer["score"]
-        pb_recognizer.entity = new_recognizer["entity"]
-        pb_recognizer.pattern = new_recognizer["pattern"]
-        pb_recognizer.language = new_recognizer["language"]
-        self.recognizers.append(pb_recognizer)
+        patterns = []
+        for pat in new_recognizer.patterns:
+            patterns.extend([Pattern(pat.name, pat.regex, pat.score)])
+        new_custom_recognizer = CustomRecognizer(name=new_recognizer.name, entity=new_recognizer.supported_entities[0],
+                                                 language=new_recognizer.supported_language,
+                                                 black_list=new_recognizer.black_list,
+                                                 context=new_recognizer.context,
+                                                 patterns=patterns)
+        self.recognizers.append(new_custom_recognizer)
 
         if skip_timestamp_update:
             return
@@ -59,8 +61,8 @@ class TestRecognizerRegistry(TestCase):
     def get_mock_pattern_recognizer(self, lang, entity, name):
         return PatternRecognizer(supported_entity=entity,
                                  supported_language=lang, name=name,
-                                 patterns=[Pattern("pat", pattern="REGEX",
-                                                   strength=1.0)])
+                                 patterns=[Pattern("pat", regex="REGEX",
+                                                   score=1.0)])
 
     def get_mock_custom_recognizer(self, lang, entities, name):
         return EntityRecognizer(supported_entities=entities, name=name,
@@ -108,12 +110,10 @@ class TestRecognizerRegistry(TestCase):
     # Test that the the cache is working as expected, i.e iff timestamp
     # changed then need to reload from the store
     def test_cache_logic(self):
-        pattern_recognizer = {
-            "name": "Rocket recognizer",
-            "pattern": r'\W*(rocket)\W*',
-            "score": 0.8,
-            "entity": "ROCKET",
-            "language": "en"}
+        pattern = Pattern("rocket pattern", r'\W*(rocket)\W*', 0.8)
+        pattern_recognizer = PatternRecognizer("ROCKET",
+                                               name="Rocket recognizer",
+                                               patterns=[pattern])
 
         # Negative flow
         recognizers_store_api_mock = RecognizerStoreApiMock()
@@ -152,12 +152,10 @@ class TestRecognizerRegistry(TestCase):
         assert recognizers_store_api_mock.times_accessed_storage == 1
 
     def test_add_pattern_recognizer(self):
-        pattern_recognizer = {
-            "name": "Rocket recognizer",
-            "pattern": r'\W*(rocket)\W*',
-            "score": 0.8,
-            "entity": "ROCKET",
-            "language": "en"}
+        pattern = Pattern("rocket pattern", r'\W*(rocket)\W*', 0.8)
+        pattern_recognizer = PatternRecognizer("ROCKET",
+                                               name="Rocket recognizer",
+                                               patterns=[pattern])
 
         # Make sure the analyzer doesn't get this entity
         recognizers_store_api_mock = RecognizerStoreApiMock()
@@ -171,15 +169,14 @@ class TestRecognizerRegistry(TestCase):
 
         recognizers = recognizer_registry.get_custom_recognizers()
         assert len(recognizers) == 1
-        assert recognizers[0].patterns[0].name == "Rocket recognizer"
+        assert recognizers[0].patterns[0].name == "rocket pattern"
+        assert recognizers[0].name == "Rocket recognizer"
 
     def test_remove_pattern_recognizer(self):
-        pattern_recognizer = {
-            "name": "Spaceship recognizer",
-            "pattern": r'\W*(spaceship)\W*',
-            "score": 0.8,
-            "entity": "SPACESHIP",
-            "language": "en"}
+        pattern = Pattern("spaceship pattern", r'\W*(spaceship)\W*', 0.8)
+        pattern_recognizer = PatternRecognizer("SPACESHIP",
+                                               name="Spaceship recognizer",
+                                               patterns=[pattern])
         # Make sure the analyzer doesn't get this entity
         recognizers_store_api_mock = RecognizerStoreApiMock()
         recognizer_registry = RecognizerRegistry(recognizers_store_api_mock)
