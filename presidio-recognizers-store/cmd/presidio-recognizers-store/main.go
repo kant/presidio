@@ -55,7 +55,6 @@ func main() {
 	svc := services.New(settings)
 
 	if settings.RedisURL != "" {
-
 		recognizersStore = svc.SetupCache()
 	}
 

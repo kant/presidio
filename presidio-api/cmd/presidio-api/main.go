@@ -28,6 +28,7 @@ func main() {
 	pflag.String(platform.AnonymizerImageSvcAddress, "", "Anonymizer image service address (optional)")
 	pflag.String(platform.OcrSvcAddress, "", "ocr service address (optional)")
 	pflag.String(platform.SchedulerSvcAddress, "", "Scheduler service address (optional)")
+	pflag.String(platform.RecognizersStoreSvcAddress, "localhost:3004", "Recognizers store service address")
 	pflag.String(platform.RedisURL, "", "Redis address (optional)")
 	pflag.String(platform.RedisPassword, "", "Redis db password (optional)")
 	pflag.Int(platform.RedisDb, 0, "Redis db (optional)")

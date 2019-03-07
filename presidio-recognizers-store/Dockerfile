@@ -1,5 +1,4 @@
-#ARG REGISTRY=presidio.azurecr.io
-ARG REGISTRY=presidio
+ARG REGISTRY=presidio.azurecr.io
 FROM ${REGISTRY}/presidio-golang-base AS build-env
 
 ARG NAME=presidio-recognizers-store

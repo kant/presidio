@@ -126,8 +126,12 @@ func (services *Services) SetupDatasinkService() {
 
 //SetupRecognizerStoreService GRPC connection
 func (services *Services) SetupRecognizerStoreService() {
-	address := "localhost"
-	recognizerStoreService, err := rpc.SetupRecognizerStoreService(fmt.Sprintf("%s:%d", address, services.Settings.RecognizersStoreGrpcPort))
+	if services.Settings.RecognizersStoreSvcAddress == "" {
+		log.Warn("recognizers store service address is empty")
+		return
+	}
+
+	recognizerStoreService, err := rpc.SetupRecognizerStoreService(services.Settings.RecognizersStoreSvcAddress)
 	if err != nil {
 		log.Fatal("Connection to recognizers store service failed %q", err)
 	}
