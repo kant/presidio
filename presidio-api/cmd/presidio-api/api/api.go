@@ -50,5 +50,5 @@ func (api *API) SetupGRPCServices() {
 	api.Services.SetupAnonymizerImageService()
 	api.Services.SetupSchedulerService()
 	api.Services.SetupOCRService()
-	api.Services.SetupRecognizerStoreService()
+	//api.Services.SetupRecognizerStoreService()
 }
