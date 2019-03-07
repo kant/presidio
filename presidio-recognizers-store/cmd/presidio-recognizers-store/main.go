@@ -38,7 +38,7 @@ var (
 func main() {
 
 	pflag.Int(platform.GrpcPort, 3004, "GRPC listen port")
-	pflag.String(platform.RedisURL, "localhost:6380", "Redis address")
+	pflag.String(platform.RedisURL, "localhost:6379", "Redis address")
 	pflag.String(platform.RedisPassword, "", "Redis db password (optional)")
 	pflag.Int(platform.RedisDb, 0, "Redis db (optional)")
 	pflag.Bool(platform.RedisSSL, false, "Redis ssl (optional)")

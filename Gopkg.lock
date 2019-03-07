@@ -106,12 +106,12 @@
   version = "v1.3.5"
 
 [[projects]]
-  branch = "recognizers_store_service"
+  branch = "development"
   digest = "1:adff74f490225dc1732d0001e74ef43dd7a2e76f951c74f9aad31faf4671ae41"
   name = "github.com/Microsoft/presidio-genproto"
   packages = ["golang"]
   pruneopts = "UT"
-  revision = "087ab021479d09f45d5cde9c88da30e9243a67be"
+  revision = "072449c74e23df9e58bb2f49dea4062e22a9f6ea"
 
 [[projects]]
   digest = "1:a59a467c541a1bf8b06e4fad6113028c959be6573b78ceca9f8020cd0d2127fc"
