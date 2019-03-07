@@ -13,7 +13,7 @@
     $ docker run --name dev-redis -d -p 6379:6379 redis
     ```
 
-3. Install go 1.11 and Python 3.7
+3. Install go 1.11 
 
 4. Install the golang packages via [dep](https://github.com/golang/dep/releases)
 
@@ -21,32 +21,7 @@
     $ dep ensure
     ```
 
-5. Build and install [re2](https://github.com/google/re2)
-
-    ```sh
-    $ re2_version="2018-12-01"
-    $ wget -O re2.tar.gz https://github.com/google/re2/archive/${re2_version}.tar.gz
-    $ mkdir re2 
-    $ tar --extract --file "re2.tar.gz" --directory "re2" --strip-components 1
-    $ cd re2 && make install
-    ```
-
-6. Install the Python packages for the analyzer in the `presidio-analyzer` folder
-
-    ```sh
-    $ pip3 install -r requirements.txt
-    $ pip3 install -r requirements-dev.txt
-    ```
-
-    **Note:** If you encounter errors with `pyre2` than install `cython` first
-
-    ```sh
-    $ pip3 install cython
-    ```
-
-7. Install [tesseract](https://github.com/tesseract-ocr/tesseract/wiki) OCR framework.
-
-8. Protobuf generator tools (Optional)
+5.  Protobuf generator tools (Optional)
 
     - `https://github.com/golang/protobuf`
 
@@ -61,6 +36,53 @@
     ```sh
     $ protoc -I . --go_out=plugins=grpc:../golang ./*.proto
     ```
+
+6. `presidio-analyzer` development
+    *   Install Python 3.7 
+    *   Build and install [re2](https://github.com/google/re2)
+
+        ```sh
+        $ re2_version="2018-12-01"
+        $ wget -O re2.tar.gz https://github.com/google/re2/archive/${re2_version}.tar.gz
+        $ mkdir re2 
+        $ tar --extract --file "re2.tar.gz" --directory "re2" --strip-components 1
+        $ cd re2 && make install
+        ```
+    *   Install the Python packages for the analyzer in the `presidio-analyzer` folder
+
+        ```sh
+        $ pip3 install -r requirements.txt
+        $ pip3 install -r requirements-dev.txt
+        ```
+
+        **Note:** If you encounter errors with `pyre2` than install `cython` first
+
+        ```sh
+        $ pip3 install cython
+        ```
+
+    *   Install [tesseract](https://github.com/tesseract-ocr/tesseract/wiki) OCR framework.
+    *   Enable Pylint, Flake8 and Pydocstyle linting following the [Code-with Engineering Playbook](https://github.com/Microsoft/code-with-engineering-playbook/blob/master/Engineering/CodeReviews/Python.md) guidelines.
+
+        If you are using VS Code, Pylint is enabled by default and you should add the following workspace settings, as explained in [VS Code Python linting](https://code.visualstudio.com/docs/python/linting).
+        This way your workspace settings are aligned with your build settings specifided in the analyzer/Dockerfile.
+        ```
+        "python.linting.enabled": true,
+        "python.linting.pylintArgs": [
+        "--rcfile",
+            "${workspaceFolder}/presidio-analyzer/pylintrc"
+        ],
+        "python.linting.flake8Enabled": true,
+        "python.linting.flake8Args": [
+            "--config",
+            "${workspaceFolder}/presidio-analyzer/setup.cfg"
+        ],
+        "python.linting.pydocstyleEnabled": true,
+        "python.linting.pydocstyleArgs": [
+            "--config",
+            "${workspaceFolder}/presidio-analyzer/setup.cfg"
+        ]
+        ```
 
 ## Development notes
 
