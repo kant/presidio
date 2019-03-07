@@ -13,8 +13,7 @@ class TestUsBankRecognizer(TestCase):
         num = '1234567'
         results = us_bank_recognizer.analyze(num, entities)
 
-        assert len(results) == 0
-
+        assert not results
 
     def test_us_bank_account_no_context(self):
         num = '945456787654'

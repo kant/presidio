@@ -1,22 +1,22 @@
+"""Main analyzer."""
 import logging
-import grpc
-import analyze_pb2
-import analyze_pb2_grpc
 from concurrent import futures
 import time
 from os import sys, path
 import os
+import grpc
 from google.protobuf.json_format import MessageToJson
 from knack import CLI
 from knack.arguments import ArgumentsContext
 from knack.commands import CLICommandsLoader, CommandGroup
 from knack.help import CLIHelp
 from knack.help_files import helps
-
+from analyzer_engine import AnalyzerEngine  # noqa
+import analyze_pb2  # pylint: disable=E0401
+import analyze_pb2_grpc
 # bug #602: Fix imports issue in python
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from analyzer_engine import AnalyzerEngine  # noqa
 
 WELCOME_MESSAGE = r"""
 
@@ -50,7 +50,10 @@ logging.basicConfig(
 
 
 class PresidioCLIHelp(CLIHelp):
+    """CLI Help for Presidio."""
+
     def __init__(self, cli_ctx=None):
+        """Create a CLI Help for Presidio."""
         super(PresidioCLIHelp, self).__init__(
             cli_ctx=cli_ctx,
             privacy_statement='',
@@ -58,7 +61,7 @@ class PresidioCLIHelp(CLIHelp):
 
 
 def serve_command_handler(env_grpc_port=False, grpc_port=3000):
-
+    """Command handler for serve option."""
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
     analyze_pb2_grpc.add_AnalyzeServiceServicer_to_server(
@@ -70,7 +73,7 @@ def serve_command_handler(env_grpc_port=False, grpc_port=3000):
             grpc_port = int(port)
 
     server.add_insecure_port('[::]:' + str(grpc_port))
-    logging.info("Starting GRPC listener at port " + str(grpc_port))
+    logging.info("Starting GRPC listener at port %s", str(grpc_port))
     server.start()
     try:
         while True:
@@ -80,7 +83,7 @@ def serve_command_handler(env_grpc_port=False, grpc_port=3000):
 
 
 def analyze_command_handler(text, fields, env_grpc_port=False, grpc_port=3001):
-
+    """Command handler for analyze option."""
     if env_grpc_port:
         port = os.environ.get('GRPC_PORT')
         if port is not None or port != '':
@@ -99,13 +102,17 @@ def analyze_command_handler(text, fields, env_grpc_port=False, grpc_port=3001):
 
 
 class CommandsLoader(CLICommandsLoader):
+    """Commands Loader."""
+
     def load_command_table(self, args):
+        """Load the command table."""
         with CommandGroup(self, '', '__main__#{}') as g:
-            g.command('serve', 'serve_command_handler', confirmation=False),
+            g.command('serve', 'serve_command_handler', confirmation=False)
             g.command('analyze', 'analyze_command_handler', confirmation=False)
         return super(CommandsLoader, self).load_command_table(args)
 
     def load_arguments(self, command):
+        """Load command arguments."""
         with ArgumentsContext(self, 'serve') as ac:
             ac.argument('env_grpc_port', default=False, required=False)
             ac.argument('grpc_port', default=3001, type=int, required=False)

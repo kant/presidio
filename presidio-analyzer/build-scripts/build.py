@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import glob
 import os
 import sys
 import tempfile
@@ -37,7 +36,8 @@ def _exec_command(command_list, cwd=None, stdout=None):
 
 def _build_package(path_to_package, dist_dir):
     cmd_success = _exec_command(
-        ['python', 'setup.py', 'bdist_wheel', '-d', dist_dir], cwd=path_to_package)
+        ['python', 'setup.py', 'bdist_wheel', '-d', dist_dir],
+        cwd=path_to_package)
     cmd_success = _exec_command(
         ['python', 'setup.py', 'sdist', '-d', dist_dir], cwd=path_to_package)
     if not cmd_success:
@@ -55,8 +55,7 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         raise ValueError(
             'Please provide temporary path for local built packages')
-    dist_dir = sys.argv[1]
-    clone_root = sys.argv[2]
-    build_packages(clone_root, dist_dir)
-    print("package were built to {}".format(dist_dir))
+
+    build_packages(sys.argv[2], sys.argv[1])
+    print("package were built to {}".format(sys.argv[1]))
     print("Done.")

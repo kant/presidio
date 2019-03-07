@@ -1,4 +1,7 @@
-class RecognizerResult:
+# TODO: Bug 702: RecognizerResult should be a dataclass (python 3.7.2)
+
+
+class RecognizerResult:  # noqa E501 pylint: disable=too-few-public-methods
 
     def __init__(self, entity_type, start, end, score):
         """

@@ -1,5 +1,5 @@
+"""Setup."""
 import setuptools
-import os.path
 
 setuptools.setup(
     name="presidio_analyzer",

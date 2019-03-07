@@ -1,25 +1,26 @@
+"""Recognizes NHS number using regex and validation."""
 from analyzer import Pattern
 from analyzer import PatternRecognizer
 
 REGEX = r'\b([0-9]{3})[- ]?([0-9]{3})[- ]?([0-9]{4})\b'
 CONTEXT = [
-    "national health service", "nhs", "health services authority",
+    "nhs", "health", "national health service", "health services authority",
     "health authority"
 ]
 
 
 class NhsRecognizer(PatternRecognizer):
-    """
-    Recognizes NHS number using regex and checksum
-    """
+    """Recognize NHS number using regex and checksum."""
 
     def __init__(self):
+        """Create NHS recogniser."""
         patterns = [Pattern('NHS (medium)', REGEX, 0.5)]
         super().__init__(supported_entity="UK_NHS", patterns=patterns,
                          context=CONTEXT)
 
-    def validate_result(self, pattern_text, pattern_result):
-        text = NhsRecognizer.__sanitize_value(pattern_text)
+    def validate_result(self, text, result):
+        """Validate NHS entity."""
+        text = NhsRecognizer.__sanitize_value(text)
 
         multiplier = 10
         total = 0
@@ -31,8 +32,8 @@ class NhsRecognizer(PatternRecognizer):
         remainder = total % 11
         check_digit = 11 - remainder
 
-        pattern_result.score = 1.0 if check_digit == 11 else 0
-        return pattern_result
+        result.score = 1.0 if check_digit == 11 else 0
+        return result
 
     @staticmethod
     def __sanitize_value(text):

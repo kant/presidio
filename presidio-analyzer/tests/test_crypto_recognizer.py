@@ -6,8 +6,8 @@ from analyzer.predefined_recognizers import CryptoRecognizer
 crypto_recognizer = CryptoRecognizer()
 entities = ["CRYPTO"]
 
+# Generate random address using https://www.bitaddress.org/
 
-# Generate random address https://www.bitaddress.org/
 
 class TestCreditCardRecognizer(TestCase):
 
@@ -28,6 +28,7 @@ class TestCreditCardRecognizer(TestCase):
 
     def test_invalid_btc(self):
         wallet = '16Yeky6GMjeNkAiNcBY7ZhrLoMSgg1BoyZ2'
-        results = crypto_recognizer.analyze('my wallet address is ' + wallet, entities)
+        results = crypto_recognizer.analyze(
+            'my wallet address is ' + wallet, entities)
 
-        assert len(results) == 0
+        assert not results

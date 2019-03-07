@@ -2,8 +2,9 @@ from unittest import TestCase
 
 from analyzer import Pattern
 
-my_pattern =  Pattern(name="my pattern", strength=0.9, pattern="[pat]")
-my_pattern_dict = {"name": "my pattern", "pattern": "[pat]", "strength": 0.9} 
+my_pattern = Pattern(name="my pattern", strength=0.9, pattern="[pat]")
+my_pattern_dict = {"name": "my pattern", "pattern": "[pat]", "strength": 0.9}
+
 
 class TestPattern(TestCase):
 
@@ -19,6 +20,4 @@ class TestPattern(TestCase):
 
         assert expected.name == actual.name
         assert expected.strength == actual.strength
-        assert expected.pattern == actual.pattern 
-
-       # assert expected == actual
+        assert expected.pattern == actual.pattern

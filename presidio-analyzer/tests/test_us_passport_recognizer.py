@@ -26,7 +26,8 @@ class TestUsPassportRecognizer(TestCase):
     #     assert len(results) == 1
     #     assert 0.49 < results[0].score < 0.71
 
-    #  Task #603: Support keyphrases: Should pass after handling keyphrases, e.g. "travel document" or "travel permit"
+    #  Task #603: Support keyphrases: Should pass after handling keyphrases,
+    #  e.g. "travel document" or "travel permit"
 
     # def test_valid_us_passport_with_exact_context_phrase():
     #     num = '912803456'

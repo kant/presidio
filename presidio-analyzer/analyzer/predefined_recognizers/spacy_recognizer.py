@@ -1,3 +1,4 @@
+"""Named Entity Recogniser (NER) based on Spacy."""
 import spacy
 from analyzer import RecognizerResult, LocalRecognizer
 
@@ -6,17 +7,21 @@ SUPPORTED_ENTITIES = ["DATE_TIME", "NRP", "LOCATION", "PERSON"]
 
 
 class SpacyRecognizer(LocalRecognizer):
+    """Named Entity Recogniser (NER) based on Spacy."""
 
     def __init__(self):
+        """Create a Named Entity Recogniser (NER)."""
         super().__init__(supported_entities=SUPPORTED_ENTITIES,
                          supported_language='en')
 
     def load(self):
+        """Load the Named Entity Recogniser (NER)."""
         # Load spaCy English lg model
         self.logger.info("Loading NLP model...")
         self.nlp = spacy.load("en_core_web_lg", disable=['parser', 'tagger'])
 
     def analyze(self, text, entities):
+        """Analyze text to detect given entities."""
         doc = self.nlp(text)
         results = []
 

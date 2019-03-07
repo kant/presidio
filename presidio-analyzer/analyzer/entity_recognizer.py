@@ -39,7 +39,6 @@ class EntityRecognizer:
         Initialize the recognizer assets if needed
         (e.g. machine learning models)
         """
-        pass
 
     @abstractmethod
     def analyze(self, text, entities):
@@ -81,5 +80,5 @@ class EntityRecognizer:
         return return_dict
 
     @classmethod
-    def from_dict(cls, entity_recognizer_dict):
-        return cls(**entity_recognizer_dict)
+    def from_dict(cls, recognizer_dict):
+        return cls(**recognizer_dict)

@@ -18,7 +18,8 @@ class TestEmailRecognizer(TestCase):
 
     def test_valid_email_with_context(self):
         email = 'info@presidio.site'
-        results = email_recognizer.analyze('my email is {}'.format(email), entities)
+        results = email_recognizer.analyze(
+            'my email is {}'.format(email), entities)
 
         assert len(results) == 1
         assert_result(results[0], entities[0], 12, 30, 1.0)
@@ -27,7 +28,8 @@ class TestEmailRecognizer(TestCase):
         email1 = 'info@presidio.site'
         email2 = 'anotherinfo@presidio.site'
         results = email_recognizer.analyze(
-            'try one of this emails: {} or {}'.format(email1, email2), entities)
+            'try one of these emails: {} or {}'.format(
+                email1, email2), entities)
 
         assert len(results) == 2
         assert_result(results[0], entities[0], 24, 42, 1.0)

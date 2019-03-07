@@ -9,6 +9,7 @@ from analyzer.predefined_recognizers import CreditCardRecognizer
 entities = ["CREDIT_CARD"]
 credit_card_recognizer = CreditCardRecognizer()
 
+
 class TestCreditCardRecognizer(TestCase):
 
     def test_valid_credit_cards(self):
@@ -17,7 +18,8 @@ class TestCreditCardRecognizer(TestCase):
         number2 = '4012-8888-8888-1881'
         number3 = '4012 8888 8888 1881'
 
-        results = credit_card_recognizer.analyze('{} {} {}'.format(number1, number2, number3), entities)
+        results = credit_card_recognizer.analyze(
+            '{} {} {}'.format(number1, number2, number3), entities)
 
         assert len(results) == 3
         assert_result(results[0], entities[0], 0, 16, 1.0)
@@ -126,14 +128,16 @@ class TestCreditCardRecognizer(TestCase):
 
     def test_invalid_credit_card(self):
         number = '4012-8888-8888-1882'
-        results = credit_card_recognizer.analyze('my credit card number is ' + number, entities)
+        results = credit_card_recognizer.analyze(
+            'my credit card number is ' + number, entities)
 
         assert len(results) == 1
-        assert_result(results[0], entities[0],25, 44, 0)
+        assert_result(results[0], entities[0], 25, 44, 0)
 
     def test_invalid_diners_card(self):
         number = '36168002586008'
-        results = credit_card_recognizer.analyze('my credit card number is ' + number, entities)
+        results = credit_card_recognizer.analyze(
+            'my credit card number is ' + number, entities)
 
         assert len(results) == 1
-        assert_result(results[0], entities[0],25, 39, 0)
+        assert_result(results[0], entities[0], 25, 39, 0)

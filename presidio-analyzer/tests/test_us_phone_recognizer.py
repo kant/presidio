@@ -7,7 +7,7 @@ phone_recognizer = UsPhoneRecognizer()
 entities = ["PHONE_NUMBER"]
 
 
-class UsPhoneRecognizer(TestCase):
+class TestUsPhoneRecognizer(TestCase):
 
     def test_phone_number_strong_match_no_context(self):
         number = '(425) 882 9090'
@@ -15,7 +15,8 @@ class UsPhoneRecognizer(TestCase):
 
         assert len(results) == 1
         assert results[0].score != 1
-        assert_result_within_score_range(results[0], entities[0], 0, 14, 0.7, 1)
+        assert_result_within_score_range(
+            results[0], entities[0], 0, 14, 0.7, 1)
 
     # TODO: enable with task #582 re-support context model in analyzer
     # def test_phone_number_strong_match_with_phone_context(self):
@@ -40,7 +41,7 @@ class UsPhoneRecognizer(TestCase):
         context = 'my phone number is:'
         results = phone_recognizer.analyze(context + number, entities)
 
-        assert len(results) == 0
+        assert not results
 
     def test_phone_number_strong_match_with_similar_context(self):
         number = '(425) 882-9090'
@@ -103,13 +104,14 @@ class UsPhoneRecognizer(TestCase):
     #     assert 0.75 < results[0].score < 0.9
     #     assert 0.75 < results[0].score < 0.9
 
-    ''' This test fails since available is not close enough to phone --> requires experimentation with language model
-    
+    ''' This test fails since available is not close enough to phone -->
+        requires experimentation with language model
+
     def test_phone_number_medium_match_with_similar_context(self):
         number = '425 8829090'
         context = 'I am available at '
         results = phone_recognizer.analyze(context + number, entities)
-    
+
         assert len(results) == 1
         assert results[0].text == number
         assert results[0].score > 0.59 and results[0].score < 0.8

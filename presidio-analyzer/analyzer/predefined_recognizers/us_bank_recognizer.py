@@ -1,3 +1,4 @@
+"""Recognizes US Bank account numbers based on regex."""
 from analyzer import Pattern
 from analyzer import PatternRecognizer
 
@@ -18,11 +19,14 @@ CONTEXT = [
 
 
 class UsBankRecognizer(PatternRecognizer):
-    """
-    Recognizes US bank number using regex
-    """
+    """Recognizes US bank account number based on regex."""
 
     def __init__(self):
+        """Create a US Bank account number recogniser."""
         patterns = [Pattern('Bank Account (weak)', REGEX, 0.05)]
         super().__init__(supported_entity="US_BANK_NUMBER",
                          patterns=patterns, context=CONTEXT)
+
+    def validate_result(self, text, result):
+        """Validate US Bank Account entity - no validation method."""
+        return result

@@ -1,3 +1,4 @@
+"""Initializing predefined-recognizers module."""
 from .credit_card_recognizer import CreditCardRecognizer  # noqa: F401
 from .spacy_recognizer import SpacyRecognizer  # noqa: F401
 from .crypto_recognizer import CryptoRecognizer  # noqa: F401

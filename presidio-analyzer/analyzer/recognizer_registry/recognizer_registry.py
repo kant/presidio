@@ -1,3 +1,4 @@
+"""Recognizers registry to manage recognizers used the analyzer engine."""
 import logging
 
 from analyzer import PatternRecognizer
@@ -9,19 +10,20 @@ from analyzer.predefined_recognizers import CreditCardRecognizer, \
 
 
 class RecognizerRegistry:
-    """
-    Detects, registers and holds all recognizers to be used by the analyzer
-    """
+    """Recognizers registry to manage recognizers used the analyzer engine."""
 
     def __init__(self, recognizers=None):
+        """Create Recognizers Registry."""
         if recognizers is None:
             recognizers = []
         self.recognizers = recognizers
 
-    def load_recognizers(self, path):
+    def load_recognizers(self, path):  # pylint: disable=unused-argument
+        """Load recognizers."""
         #   TODO: Change the code to dynamic loading -
         # Task #598:  Support loading of the pre-defined recognizers
         # from the given path.
+        # Once done, remove the pylint disable comment
         self.recognizers.extend([CreditCardRecognizer(),
                                  SpacyRecognizer(),
                                  CryptoRecognizer(), DomainRecognizer(),
@@ -33,12 +35,11 @@ class RecognizerRegistry:
 
     def add_pattern_recognizer_from_dict(self, recognizer_dict):
         """
-        Creates a pattern recognizer from a dictionary
-         and adds it to the recognizers list
-        :param recognizer_dict: A pattern recognizer serialized
-         into a dictionary
-        """
+        Create and add a pattern recognizer from a dictionary.
 
+        :param recognizer_dict: A pattern recognizer serialized
+        into a dictionary
+        """
         pattern_recognizer = PatternRecognizer.from_dict(recognizer_dict)
 
         for rec in self.recognizers:
@@ -51,7 +52,8 @@ class RecognizerRegistry:
 
     def remove_recognizer(self, name):
         """
-        Removes a recognizer by the given name, from the recognizers list.
+        Remove a recognizer from the registry by a given name.
+
         :param name: The recognizer name
         """
         found = False
@@ -65,9 +67,11 @@ class RecognizerRegistry:
 
     def get_recognizers(self, entities=None, language=None):
         """
-        Returns a list of the recognizer, which supports the specified name and
-        language. if no language and entities are given, all the available
-        recognizers will be returned
+        Return a list of recognizers.
+
+        Return a list of recognisers which supports the specified name and
+        language. If no language and entities are given, all the available
+        recognizers will be returned.
         :param entities: the requested entities
         :param language: the requested language
         :return: A list of the recognizers which supports the supplied entities
@@ -88,7 +92,7 @@ class RecognizerRegistry:
                       entity in rec.supported_entities
                       and language == rec.supported_language]
 
-            if len(subset) == 0:
+            if subset:
                 logging.warning(
                     "Entity " + entity +
                     " doesn't have the corresponding recognizer in language :"
@@ -96,7 +100,7 @@ class RecognizerRegistry:
             else:
                 to_return.extend(subset)
 
-        if len(to_return) == 0:
+        if to_return:
             raise ValueError(
                 "No matching recognizers were found to serve the request.")
 

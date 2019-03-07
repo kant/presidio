@@ -1,3 +1,4 @@
+"""Recognizes a US Passport number based on regex."""
 from analyzer import Pattern
 from analyzer import PatternRecognizer
 
@@ -11,11 +12,14 @@ CONTEXT = [
 
 
 class UsPassportRecognizer(PatternRecognizer):
-    """
-    Recognizes US Passport number using regex
-    """
+    """Recognizes a US Passport number based on regex."""
 
     def __init__(self):
+        """Create a US Passport number recognizer."""
         patterns = [Pattern('Passport (very weak)', VERY_WEAK_REGEX, 0.05)]
         super().__init__(supported_entity="US_PASSPORT", patterns=patterns,
                          context=CONTEXT)
+
+    def validate_result(self, text, result):
+        """Validate US Passport - no validation method."""
+        return result

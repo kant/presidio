@@ -1,9 +1,10 @@
 import logging
 import os
 
-import analyze_pb2
-import analyze_pb2_grpc
-import common_pb2
+# TODO Bug 700: pylint errors on importing *_pb2* files
+import analyze_pb2  # pylint: disable=E0401
+import analyze_pb2_grpc  # pylint: disable=E0401
+import common_pb2  # pylint: disable=E0401
 
 from analyzer import RecognizerRegistry  # noqa: F401
 
@@ -48,7 +49,7 @@ class AnalyzerEngine(analyze_pb2_grpc.AnalyzeServiceServicer):
 
         return filtered_results
 
-    def Apply(self, request, context):
+    def Apply(self, request, context):  # pylint: disable=unused-argument
         logging.info("Starting Apply")
         entities = self.__convert_fields_to_entities(
             request.analyzeTemplate.fields)
@@ -60,7 +61,7 @@ class AnalyzerEngine(analyze_pb2_grpc.AnalyzeServiceServicer):
 
         response.analyzeResults.extend(
             self.__convert_results_to_proto(results))
-        logging.info("Found {} results".format(len(results)))
+        logging.info("Found %d results", len(results))
         return response
 
     def get_language_from_request(self, request):

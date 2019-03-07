@@ -1,6 +1,8 @@
+"""Recognizes IBAN code using regex + checksum."""
+import string
 from analyzer import Pattern
 from analyzer import PatternRecognizer
-import string
+
 
 REGEX = u'[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16}'
 CONTEXT = ["iban"]
@@ -11,21 +13,26 @@ LETTERS = {
 
 
 class IbanRecognizer(PatternRecognizer):
-    """
-    Recognizes IBAN code using regex and checksum
+    """Recognizes IBAN code using regex and checksum.
+
+    First, a generic regex is used to identify IBAN candidates.
+    Once found, a check-sum validation is ran. If the checksum is valid,
+    the candidate is matched with a country-specific IBAN format.
     """
 
     def __init__(self):
+        """Crate an IBAN code recogniser."""
         patterns = [Pattern('Iban (Medium)', REGEX, 0.5)]
         super().__init__(supported_entity="IBAN_CODE", patterns=patterns,
                          context=CONTEXT)
 
-    def validate_result(self, text, pattern_result):
+    def validate_result(self, text, result):
+        """Validate an IBAN code using checksum."""
         is_valid_iban = IbanRecognizer.__generate_iban_check_digits(
             text) == text[2:4] and IbanRecognizer.__valid_iban(text)
 
-        pattern_result.score = 1.0 if is_valid_iban else 0
-        return pattern_result
+        result.score = 1.0 if is_valid_iban else 0
+        return result
 
     @staticmethod
     def __number_iban(iban):

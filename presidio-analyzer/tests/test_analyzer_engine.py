@@ -18,6 +18,7 @@ class MockRecognizerRegistry(RecognizerRegistry):
         self.recognizers.extend([CreditCardRecognizer(),
                                  UsPhoneRecognizer()])
 
+
 class TestAnalyzerEngine(TestCase):
 
     def test_analyze_with_single_predefined_recognizers(self):
@@ -26,7 +27,7 @@ class TestAnalyzerEngine(TestCase):
         langauge = "en"
         entities = ["CREDIT_CARD"]
         results = analyze_engine.analyze(text, entities, langauge)
-       
+
         assert len(results) == 1
         assert_result(results[0], "CREDIT_CARD", 14, 33, 1.0)
 
@@ -36,7 +37,7 @@ class TestAnalyzerEngine(TestCase):
         langauge = "en"
         entities = ["CREDIT_CARD", "PHONE_NUMBER"]
         results = analyze_engine.analyze(text, entities, langauge)
-       
+
         assert len(results) == 2
         assert_result(results[0], "CREDIT_CARD", 14, 33, 1.0)
         assert_result(results[1], "PHONE_NUMBER", 48, 59, 0.5)
@@ -45,7 +46,8 @@ class TestAnalyzerEngine(TestCase):
         with pytest.raises(ValueError):
             langauge = "en"
             analyze_engine = AnalyzerEngine(MockRecognizerRegistry())
-            text = " Credit card: 4095-2609-9393-4932,  my name is  John Oliver, DateTime: September 18 " \
+            text = "Credit card: 4095-2609-9393-4932, my name is John Oliver,"\
+                   "DateTime: September 18 " \
                    "Domain: microsoft.com"
             entities = []
             analyze_engine.analyze(text, entities, langauge)
@@ -56,7 +58,7 @@ class TestAnalyzerEngine(TestCase):
         text = ""
         entities = ["CREDIT_CARD", "PHONE_NUMBER"]
         results = analyze_engine.analyze(text, entities, langauge)
-        
+
         assert len(results) == 0
 
     def test_analyze_with_unsupported_language(self):
@@ -65,7 +67,7 @@ class TestAnalyzerEngine(TestCase):
             analyze_engine = AnalyzerEngine(MockRecognizerRegistry())
             text = ""
             entities = ["CREDIT_CARD", "PHONE_NUMBER"]
-            analyze_engine.analyze(text, entities, "de")
+            analyze_engine.analyze(text, entities, langauge)
 
     def test_remove_duplicates(self):
         # test same result with different score will return only the highest
@@ -77,7 +79,8 @@ class TestAnalyzerEngine(TestCase):
         assert results[0].score == 0.5
 
         # TODO: add more cases with bug:
-        # bug# 597: Analyzer remove duplicates doesn't handle all cases of one result as a substring of the other
+        # bug# 597: Analyzer remove duplicates doesn't handle all cases
+        # of one result as a substring of the other
 
     def test_add_pattern_recognizer_from_dict(self):
         pattern = Pattern("rocket pattern", r'\W*(rocket)\W*', 0.8)
@@ -91,7 +94,7 @@ class TestAnalyzerEngine(TestCase):
         entities = ["CREDIT_CARD", "ROCKET"]
 
         results = analyze_engine.analyze(text=text, entities=entities,
-                                     language='en')
+                                         language='en')
 
         assert len(results) == 0
 
@@ -100,8 +103,8 @@ class TestAnalyzerEngine(TestCase):
 
         # Check that the entity is recognized:
         results = analyze_engine.analyze(text=text, entities=entities,
-                                     language='en')
-        
+                                         language='en')
+
         assert len(results) == 1
         assert_result(results[0], "ROCKET", 0, 7, 0.8)
 
@@ -117,7 +120,7 @@ class TestAnalyzerEngine(TestCase):
         entities = ["CREDIT_CARD", "SPACESHIP"]
 
         results = analyze_engine.analyze(text=text, entities=entities,
-                                     language='en')
+                                         language='en')
 
         assert len(results) == 0
 
@@ -126,7 +129,7 @@ class TestAnalyzerEngine(TestCase):
 
         # Check that the entity is recognized:
         results = analyze_engine.analyze(text=text, entities=entities,
-                                     language='en')
+                                         language='en')
         assert len(results) == 1
         assert_result(results[0], "SPACESHIP", 0, 10, 0.8)
 
@@ -135,10 +138,9 @@ class TestAnalyzerEngine(TestCase):
 
         # Test again to see we didn't get any results
         results = analyze_engine.analyze(text=text, entities=entities,
-                                     language='en')
+                                         language='en')
 
         assert len(results) == 0
-
 
     def test_Apply_with_language_returns_correct_response(self):
         analyze_engine = AnalyzerEngine(MockRecognizerRegistry())
@@ -153,7 +155,6 @@ class TestAnalyzerEngine(TestCase):
 
         assert response.analyzeResults is not None
 
-
     def test_Apply_with_no_language_returns_default(self):
         analyze_engine = AnalyzerEngine(MockRecognizerRegistry())
 
@@ -165,4 +166,3 @@ class TestAnalyzerEngine(TestCase):
         request.text = "My credit card number is 4916994465041084"
         response = analyze_engine.Apply(request, None)
         assert response.analyzeResults is not None
-        
