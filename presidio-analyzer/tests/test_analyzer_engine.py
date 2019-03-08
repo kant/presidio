@@ -1,12 +1,14 @@
 from unittest import TestCase
 
 import pytest
+
+from assertions import assert_result
+
 import time
 import logging
 
 from analyzer import AnalyzerEngine, PatternRecognizer, Pattern, \
     RecognizerResult, RecognizerRegistry
-from analyzer.analyze_pb2 import AnalyzeRequest
 from analyzer.predefined_recognizers import CreditCardRecognizer, \
     UsPhoneRecognizer, CustomRecognizer
 from analyzer.recognizer_registry.recognizers_store_api \

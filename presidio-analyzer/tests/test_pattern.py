@@ -21,7 +21,7 @@ class TestPattern(TestCase):
         actual = pat.to_dict()
 
         assert expected.name == actual.name
-        assert expected.strength == actual.strength
+        assert expected.score == actual.score
         assert expected.pattern == actual.pattern
 
        # assert expected == actual
