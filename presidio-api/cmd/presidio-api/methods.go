@@ -274,11 +274,11 @@ func updateRecognizer(c *gin.Context) {
 }
 
 func deleteRecognizer(c *gin.Context) {
-	var request *types.RecognizerDeleteRequest
+	var request types.RecognizerDeleteRequest
 	id := c.Param("id")
 	request.Name = id
 	result, err := recognizers.DeleteRecognizer(
-		c, api, request)
+		c, api, &request)
 	if err != nil {
 		server.AbortWithError(c, http.StatusBadRequest, err)
 		return
@@ -287,11 +287,11 @@ func deleteRecognizer(c *gin.Context) {
 }
 
 func getRecognizer(c *gin.Context) {
-	var request *types.RecognizerGetRequest
+	var request types.RecognizerGetRequest
 	id := c.Param("id")
 	request.Name = id
 	result, err := recognizers.GetRecognizer(
-		c, api, request)
+		c, api, &request)
 	if err != nil {
 		server.AbortWithError(c, http.StatusBadRequest, err)
 		return
