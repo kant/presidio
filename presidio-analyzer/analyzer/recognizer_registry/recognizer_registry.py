@@ -9,7 +9,8 @@ from analyzer.predefined_recognizers import CreditCardRecognizer, \
     EmailRecognizer, IbanRecognizer, IpRecognizer, NhsRecognizer, \
     UsBankRecognizer, UsLicenseRecognizer, \
     UsItinRecognizer, UsPassportRecognizer, UsPhoneRecognizer, \
-    UsSsnRecognizer
+    UsSsnRecognizer, CustomRecognizer
+from analyzer import Pattern
 
 
 class RecognizerRegistry:
@@ -134,8 +135,19 @@ class RecognizerRegistry:
                         "No custom recognizers found")
                     return []
 
-                for element in raw_recognizers:
-                    logging.info("adding: " + element.name)
-                    self.loaded_custom_recognizers.append(element)
+                for new_recognizer in raw_recognizers:
+                    logging.info("adding: " + new_recognizer.name)
+                    patterns = []
+                    for pat in new_recognizer.patterns:
+                        patterns.extend(
+                            [Pattern(pat.name, pat.regex, pat.score)])
+                    new_custom_recognizer = CustomRecognizer(
+                        name=new_recognizer.name, entity=new_recognizer.supported_entities[0],
+                        language=new_recognizer.supported_language,
+                        black_list=new_recognizer.black_list,
+                        context=new_recognizer.context,
+                        patterns=patterns)
+                    self.loaded_custom_recognizers.append(
+                        new_custom_recognizer)
 
         return self.loaded_custom_recognizers
