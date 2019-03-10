@@ -276,42 +276,36 @@ func updateRecognizer(c *gin.Context) {
 func deleteRecognizer(c *gin.Context) {
 	var request *types.RecognizerDeleteRequest
 	id := c.Param("id")
-	if c.Bind(&request) == nil {
-		request.Name = id
-		result, err := recognizers.DeleteRecognizer(
-			c, api, request)
-		if err != nil {
-			server.AbortWithError(c, http.StatusBadRequest, err)
-			return
-		}
-		server.WriteResponse(c, http.StatusOK, result)
+	request.Name = id
+	result, err := recognizers.DeleteRecognizer(
+		c, api, request)
+	if err != nil {
+		server.AbortWithError(c, http.StatusBadRequest, err)
+		return
 	}
+	server.WriteResponse(c, http.StatusOK, result)
 }
 
 func getRecognizer(c *gin.Context) {
 	var request *types.RecognizerGetRequest
 	id := c.Param("id")
-	if c.Bind(&request) == nil {
-		request.Name = id
-		result, err := recognizers.GetRecognizer(
-			c, api, request)
-		if err != nil {
-			server.AbortWithError(c, http.StatusBadRequest, err)
-			return
-		}
-		server.WriteResponse(c, http.StatusOK, result)
+	request.Name = id
+	result, err := recognizers.GetRecognizer(
+		c, api, request)
+	if err != nil {
+		server.AbortWithError(c, http.StatusBadRequest, err)
+		return
 	}
+	server.WriteResponse(c, http.StatusOK, result)
 }
 
 func getAllRecognizers(c *gin.Context) {
 	var request *types.RecognizersGetAllRequest
-	if c.Bind(&request) == nil {
-		result, err := recognizers.GetAllRecognizers(
-			c, api, request)
-		if err != nil {
-			server.AbortWithError(c, http.StatusBadRequest, err)
-			return
-		}
-		server.WriteResponse(c, http.StatusOK, result)
+	result, err := recognizers.GetAllRecognizers(
+		c, api, request)
+	if err != nil {
+		server.AbortWithError(c, http.StatusBadRequest, err)
+		return
 	}
+	server.WriteResponse(c, http.StatusOK, result)
 }
