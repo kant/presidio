@@ -8,7 +8,12 @@ import recognizers_store_pb2_grpc
 
 class RecognizerStoreApi:
     def __init__(self):
-        recognizers_store_svc_url = os.environ['RECOGNIZERS_STORE_SVC_ADDRESS']
+        recognizers_store_svc_url = ""
+        try:
+            recognizers_store_svc_url = os.environ["RECOGNIZERS_STORE_SVC_ADDRESS"]
+        except KeyError:
+            recognizers_store_svc_url = "localhost:3004"
+
         channel = grpc.insecure_channel(recognizers_store_svc_url)
         self.rs_stub = recognizers_store_pb2_grpc.RecognizersStoreServiceStub(
             channel)
