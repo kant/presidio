@@ -1,4 +1,5 @@
 import logging
+import os
 
 import grpc
 import recognizers_store_pb2
@@ -7,7 +8,8 @@ import recognizers_store_pb2_grpc
 
 class RecognizerStoreApi:
     def __init__(self):
-        channel = grpc.insecure_channel('localhost:3004')
+        recognizers_store_svc_url = os.environ['RECOGNIZERS_STORE_SVC_ADDRESS']
+        channel = grpc.insecure_channel(recognizers_store_svc_url)
         self.rs_stub = recognizers_store_pb2_grpc.RecognizersStoreServiceStub(
             channel)
 
